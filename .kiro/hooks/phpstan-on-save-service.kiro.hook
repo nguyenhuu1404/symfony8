@@ -1,0 +1,13 @@
+{
+  "name": "PHPStan on Service save",
+  "description": "Chạy static analysis khi lưu file trong src/Service",
+  "enabled": true,
+  "trigger": {
+    "type": "fileEdited",
+    "pattern": "src/Service/**/*.php"
+  },
+  "action": {
+    "type": "runCommand",
+    "command": "docker compose exec php vendor/bin/phpstan analyse ${file}"
+  }
+}
