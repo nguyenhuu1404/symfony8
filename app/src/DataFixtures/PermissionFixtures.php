@@ -26,6 +26,9 @@ class PermissionFixtures extends Fixture
 
         // Module: permission
         ['name' => 'permission.view', 'group' => 'permission'],
+        ['name' => 'permission.create', 'group' => 'permission'],
+        ['name' => 'permission.edit', 'group' => 'permission'],
+        ['name' => 'permission.delete', 'group' => 'permission'],
         ['name' => 'permission.manage', 'group' => 'permission'],
     ];
 

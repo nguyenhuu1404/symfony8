@@ -6,12 +6,14 @@ use App\Dto\Permission\PermissionRequestDto;
 use App\Entity\Permission;
 use App\Http\Mapper\PermissionMapper;
 use App\Service\PermissionService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/v1/permissions', name: 'api_v1_permissions_')]
-class PermissionController
+class PermissionController extends AbstractController
 {
     public function __construct(
         private readonly PermissionService $permissionService,
@@ -19,6 +21,7 @@ class PermissionController
     }
 
     #[Route('', name: 'index', methods: ['GET'])]
+    #[IsGranted('permission.view')]
     public function index(): array
     {
         return PermissionMapper::collection($this->permissionService->list());
@@ -29,12 +32,14 @@ class PermissionController
     // tự query theo route param {id}, và tự throw NotFoundHttpException (404)
     // nếu không tìm thấy -> không cần code tay find() + check null.
     #[Route('/{id}', name: 'show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[IsGranted('permission.view')]
     public function show(Permission $permission): array
     {
         return PermissionMapper::toArray($permission);
     }
 
     #[Route('', name: 'store', methods: ['POST'])]
+    #[IsGranted('permission.create')]
     public function store(#[MapRequestPayload] PermissionRequestDto $dto): array
     {
         $permission = $this->permissionService->create($dto);
@@ -43,6 +48,7 @@ class PermissionController
     }
 
     #[Route('/{id}', name: 'update', methods: ['PUT', 'PATCH'], requirements: ['id' => '\d+'])]
+    #[IsGranted('permission.edit')]
     public function update(Permission $permission, #[MapRequestPayload] PermissionRequestDto $dto): array
     {
         $updated = $this->permissionService->update($permission, $dto);
@@ -51,6 +57,7 @@ class PermissionController
     }
 
     #[Route('/{id}', name: 'destroy', methods: ['DELETE'], requirements: ['id' => '\d+'])]
+    #[IsGranted('permission.delete')]
     public function destroy(Permission $permission): Response
     {
         $this->permissionService->delete($permission);
