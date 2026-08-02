@@ -1,0 +1,13 @@
+{
+  "name": "Check IsGranted on Controller save",
+  "description": "Nhắc agent kiểm tra mọi route trong Controller vừa sửa đều có #[IsGranted]",
+  "enabled": true,
+  "trigger": {
+    "type": "fileEdited",
+    "pattern": "src/Controller/**/*.php"
+  },
+  "action": {
+    "type": "agentPrompt",
+    "prompt": "Kiểm tra file vừa lưu: mọi method có #[Route] phải có kèm #[IsGranted('resource.action')] theo đúng convention trong rbac.md. Nếu thiếu, báo cho user, KHÔNG tự ý thêm quyền mà không hỏi permission string phù hợp."
+  }
+}
