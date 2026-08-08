@@ -18,9 +18,21 @@ fileMatchPattern: "src/{Controller,Security}/**/*.php"
 
 ## Convention permission string
 
-`{resource}.{action}` — action chuẩn là `view` (đọc) và `manage` (tạo/sửa/xoá).
-Nếu cần action đặc thù hơn (VD: `permission.toggle-status`), thêm entry mới
-vào `PermissionFixtures` và document lý do trong PR.
+`{resource}.{action}` — 4 action chuẩn, tách riêng theo từng route CRUD:
+
+| Route | Method | Permission string |
+|---|---|---|
+| index | GET | `{resource}.view` |
+| show | GET /{id} | `{resource}.view` |
+| store | POST | `{resource}.create` |
+| update | PUT/PATCH /{id} | `{resource}.edit` |
+| destroy | DELETE /{id} | `{resource}.delete` |
+
+Không dùng `{resource}.manage` gộp chung — mỗi hành động ghi/xoá có permission
+riêng để phân quyền chi tiết hơn (VD: role có thể tạo nhưng không được xoá).
+
+Nếu cần action đặc thù hơn ngoài 4 action trên (VD: `permission.toggle-status`),
+thêm entry mới vào `PermissionFixtures` và document lý do trong PR.
 
 ## Khi thêm permission mới
 

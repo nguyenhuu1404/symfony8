@@ -1,0 +1,15 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Check CRUD Permission mapping on save",
+      "trigger": "PostFileSave",
+      "description": "Kiểm tra 5 route CRUD trong bất kỳ *Controller.php nào dưới src/Controller/Api/V1 đều có #[IsGranted] đúng bảng action trong rbac.md — thay cho bản cũ chỉ check riêng PermissionController.",
+      "matcher": "src/Controller/Api/V1/.*Controller\\.php$",
+      "action": {
+        "type": "agent",
+        "prompt": "Kiểm tra Controller vừa lưu. Suy ra tên resource từ tên file (VD: RoleController -> resource = role). Đảm bảo 5 route CRUD được gán đúng #[IsGranted] theo bảng chuẩn trong rbac.md:\n- index (GET)              -> #[IsGranted('{resource}.view')]\n- show (GET /{id})         -> #[IsGranted('{resource}.view')]\n- store (POST)             -> #[IsGranted('{resource}.create')]\n- update (PUT/PATCH /{id}) -> #[IsGranted('{resource}.edit')]\n- destroy (DELETE /{id})   -> #[IsGranted('{resource}.delete')]\n\nNếu thiếu route nào, hoặc dùng sai permission string (VD: dùng 'manage' thay vì action cụ thể, hoặc sai tên resource), báo ngay cho user. KHÔNG tự sửa mà không hỏi. Nhắc user chạy lại doctrine:fixtures:load nếu permission mới chưa có trong DB."
+      }
+    }
+  ]
+}
