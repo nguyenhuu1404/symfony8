@@ -63,7 +63,17 @@ final class ApiExceptionListener
             return;
         }
 
-        // 5. Fallback cho mọi lỗi khác (500) — KHÔNG lộ message thật ra ngoài,
+        // 5. Mọi HttpException còn lại (ConflictHttpException, UnprocessableEntityHttpException,
+        //    TooManyRequestsHttpException...) — dùng status code của chính exception đó
+        if ($exception instanceof HttpExceptionInterface) {
+            $event->setResponse(ApiResponse::error(
+                $exception->getMessage() ?: 'HTTP error.',
+                $exception->getStatusCode(),
+            ));
+            return;
+        }
+
+        // 6. Fallback cho mọi lỗi khác (500) — KHÔNG lộ message thật ra ngoài,
         //    tránh leak thông tin nội bộ (stack trace, tên class, query SQL...)
         //    Log lỗi thật ở nơi khác (monolog), chỉ trả message chung cho client.
         $event->setResponse(ApiResponse::error('Internal server error.', 500));
